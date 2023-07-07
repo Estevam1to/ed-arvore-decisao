@@ -2,6 +2,9 @@
 #include <fstream>
 #include <algorithm>
 #include <map>
+#include <unordered_set>
+#include <unordered_map>
+#include <queue>
 #include <vector>
 #include <string>
 
@@ -10,13 +13,14 @@
 using namespace std;
 
 #define nl '\n'
+#define TAB_CODE 9
 
 vector<string> diseases, questions;
-map<string, int> diseasesCodes;
+unordered_map<string, unordered_set<int>> diseasesCodes;
 
 int lenDiseases, lenQuestions;
 
-BinaryTree<int> * diseaseTree;
+BinaryTree<int> * diseaseTree = new BinaryTree<int>(1);
 
 // get data from file and set to vector the diseases and in map the code of diseases:
 void getDataFromFile() {
@@ -45,18 +49,17 @@ void getDataFromFile() {
             ++ itQuestions;
 
           } else {
-            int firstTab = line.find(9);
-            cout <<  line.substr(0, firstTab) << endl;
+            int firstTab = line.find(TAB_CODE);
+            
             int keyOfDesease = stoi(line.substr(0, firstTab));
             
             string code = line.substr(firstTab + 1, line.size());
-            string::iterator end_pos = remove(code.begin(), code.end(), 9);
+            string::iterator end_pos = remove(code.begin(), code.end(), TAB_CODE);
           
             code.erase(end_pos, code.end());
             
-            cout << code << nl;
             //  set key of desease to deseasesCodes map:
-            diseasesCodes[code] = keyOfDesease;
+            diseasesCodes[code].insert(keyOfDesease);
           }
         }
 
@@ -66,48 +69,104 @@ void getDataFromFile() {
       }
     }
   }
+  bool teste = false;
 
-  BinaryTree<int> * buildDiseaseTree(int node, int left, int right) {
-    if(node > lenDiseases) 
-      return nullptr;
+  void buildDiseaseTree(){
+    Node<int> *root = new Node<int>(1, nullptr, nullptr);
+    
+    Node<int> * left   = nullptr;
+    Node<int> * right  = nullptr;
 
-    int middle = (left + right) / 2;
+    queue<Node<int>  *> nodes;
 
-    BinaryTree<int> &leftTree = (*buildDiseaseTree(node * 2, left, middle));
-    BinaryTree<int> &rightTree = (*buildDiseaseTree(node * 2 + 1, middle + 1, right));
+    nodes.push(root);
 
-    BinaryTree<int> * tree = new BinaryTree<int>(node, leftTree, rightTree);
+    while(!nodes.empty()) {
+      Node<int> * current = nodes.front(); 
+      nodes.pop();
+      
+      if(current->getValue() == lenQuestions){
+        teste = true;
+        continue;
+      }
 
-    return tree;
+      left  = new Node<int>(current->getValue() + 1, nullptr, nullptr);
+      right = new Node<int>(current->getValue() + 1, nullptr, nullptr);
+
+      current->setLeft(left);
+      current->setRight(right);
+
+      nodes.push(left);
+      nodes.push(right);
+    }
+    
+    diseaseTree->setRoot(root);
+  }
+
+  char doQuestion(Node<int> * root) {
+    cout << "Pergunta: " << questions[root->getValue() - 1] << " (S/N)" << nl;
+
+    char answer;
+    cin >> answer;
+
+    if(toupper(answer) == 'S') {
+      return '1';
+    } else {
+      return '0';
+    }
+  }
+
+  void searchDisease(Node<int> * root, string ans) {
+
+    if(root->getLeft() == nullptr && root->getRight() == nullptr) {
+      if(doQuestion(root) == '1') {
+        ans[root->getValue() - 1] = '1';
+        root = root->getLeft();
+      } else {
+        ans[root->getValue() - 1] = '0';
+        root = root->getRight();
+      }
+
+      cout << "Resposta: " << ans << nl;
+      
+      unordered_set<int> diseasesKeys = diseasesCodes[ans];
+
+      if(diseasesKeys.size()) {
+        for(int i: diseasesKeys) {
+          cout << "Doença: " << diseases[i - 1] << nl;
+        }
+
+        return;
+      }
+
+      cout << "Doença não identificada!" << nl;
+
+      return;
+    }
+
+    if(doQuestion(root) == '1') {
+      ans[root->getValue() - 1] = '1';
+      root = root->getLeft();
+    } else {
+      ans[root->getValue() - 1] = '0';
+      root = root->getRight();
+    }
+
+    return searchDisease(root, ans);
   }
 
   int main() {
 
     getDataFromFile();
 
-    diseaseTree = new BinaryTree<int>();
+    buildDiseaseTree();
 
-    diseaseTree = buildDiseaseTree(1, 0, lenDiseases - 1);
-
-    // while(!diseaseTree->is_empty()) {
-    //   Node<int> * node = diseaseTree->getRoot();
-
-    //   if(node->getLeft() == nullptr && node->getRight() == nullptr) {
-    //     cout << "Doença encontrada: " << diseases[node->getValue() - 1] << nl;
-    //     break;
-    //   }
-
-    //   cout << "Pergunta: " << diseases[node->getValue() - 1] << " (S/N)" << nl;
-
-    //   string answer;
-    //   cin >> answer;
-
-    //   if(answer == "S") {
-    //     diseaseTree->setRoot(node->getLeft());
-    //   } else {
-    //     diseaseTree->setRoot(node->getRight());
-    //   }
-    // }
+    string ans = "";
+    
+    for(int i = 0; i < lenQuestions; ++ i) 
+      ans += "0"; 
+    
+    searchDisease(diseaseTree->getRoot(), ans);
 
     return 0;
   }

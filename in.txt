@@ -24,6 +24,7 @@ yellowish_skin
 yellowing_of_eyes
 chills
 skin_rash
+1   1   0   1   0   0   1   0   0   0   1   0
 1	1	0	1	1	0	1	0	0	0	0	1
 1	1	0	1	1	0	1	0	0	0	0	1
 1	1	0	1	1	0	1	0	0	0	0	1
