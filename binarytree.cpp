@@ -1,3 +1,13 @@
+/**
+ * @authors Luis Estevam Rosa Chaves (536699), Gustavo Henrique Freitas de Sousa (535735)
+ * @brief 
+ * @date 2023-06-08
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
+
 #ifndef BINARYTREE_CPP
 #define BINARYTREE_CPP
 

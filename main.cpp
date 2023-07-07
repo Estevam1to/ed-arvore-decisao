@@ -1,7 +1,16 @@
+/**
+ * @authors Luis Estevam Rosa Chaves (536699), Gustavo Henrique Freitas de Sousa (535735)
+ * @brief 
+ * @date 2023-06-08
+ * 
+ * @copyright Copyright (c) 2023
+ * 
+ */
+
+
 #include <iostream>
 #include <fstream>
 #include <algorithm>
-#include <map>
 #include <unordered_set>
 #include <unordered_map>
 #include <queue>
@@ -158,21 +167,7 @@ void getDataFromFile() {
     string ans = "";
     
     for(int i = 0; i < lenQuestions; ++ i) 
-      ans += "0"; 
-    
-    // int it = 0;
-    // for(auto t: diseasesCodes) {
-    //   cout << t.first << " ";
-    //   for(auto i: t.second) {
-    //     cout << i << ", ";
-    //   }
-    //   cout << nl;
-
-    //   if(it ++ == 4) break;
-    // }
-
-    // 00011011100;
-  
+      ans += "0";
 
     searchDisease(diseaseTree->getRoot(), ans);
 
