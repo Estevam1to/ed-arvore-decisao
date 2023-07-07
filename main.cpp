@@ -33,7 +33,7 @@ void getDataFromFile() {
       int itDiseases = 0, itQuestions = 0;
 
       if(file.is_open()) {
-        while (getline(file, line) && !line.empty()) {
+        while (getline(file, line)) {
           if (itDiseases < lenDiseases) {
 
             diseases.push_back(line);
@@ -45,15 +45,16 @@ void getDataFromFile() {
             ++ itQuestions;
 
           } else {
-
-            cout << line.substr(0, line.find("	")) << endl;
-            int keyOfDesease = stoi(line.substr(0, line.find(" ")));
+            int firstTab = line.find(9);
+            cout <<  line.substr(0, firstTab) << endl;
+            int keyOfDesease = stoi(line.substr(0, firstTab));
             
-            string code = line.substr(line.find(" ") + 1, line.size());
-            string::iterator end_pos = remove(code.begin(), code.end(), ' ');
+            string code = line.substr(firstTab + 1, line.size());
+            string::iterator end_pos = remove(code.begin(), code.end(), 9);
           
             code.erase(end_pos, code.end());
-
+            
+            cout << code << nl;
             //  set key of desease to deseasesCodes map:
             diseasesCodes[code] = keyOfDesease;
           }
