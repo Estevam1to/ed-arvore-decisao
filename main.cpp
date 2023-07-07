@@ -22,12 +22,10 @@ int lenDiseases, lenQuestions;
 
 BinaryTree<int> * diseaseTree = new BinaryTree<int>(1);
 
-// get data from file and set to vector the diseases and in map the code of diseases:
 void getDataFromFile() {
   ifstream file("in.txt");
 
   if (file.is_open()) {
-      // get first line from file:
       string line;
       getline(file, line);
 
@@ -58,7 +56,6 @@ void getDataFromFile() {
           
             code.erase(end_pos, code.end());
             
-            //  set key of desease to deseasesCodes map:
             diseasesCodes[code].insert(keyOfDesease);
           }
         }
@@ -69,8 +66,7 @@ void getDataFromFile() {
       }
     }
   }
-  bool teste = false;
-
+  
   void buildDiseaseTree(){
     Node<int> *root = new Node<int>(1, nullptr, nullptr);
     
@@ -85,10 +81,7 @@ void getDataFromFile() {
       Node<int> * current = nodes.front(); 
       nodes.pop();
       
-      if(current->getValue() == lenQuestions){
-        teste = true;
-        continue;
-      }
+      if(current->getValue() == lenQuestions)continue;
 
       left  = new Node<int>(current->getValue() + 1, nullptr, nullptr);
       right = new Node<int>(current->getValue() + 1, nullptr, nullptr);
@@ -166,6 +159,20 @@ void getDataFromFile() {
     for(int i = 0; i < lenQuestions; ++ i) 
       ans += "0"; 
     
+    // int it = 0;
+    // for(auto t: diseasesCodes) {
+    //   cout << t.first << " ";
+    //   for(auto i: t.second) {
+    //     cout << i << ", ";
+    //   }
+    //   cout << nl;
+
+    //   if(it ++ == 4) break;
+    // }
+
+    // 00011011100;
+  
+
     searchDisease(diseaseTree->getRoot(), ans);
 
     return 0;
