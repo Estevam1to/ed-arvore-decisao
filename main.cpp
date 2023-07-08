@@ -160,20 +160,6 @@ void getDataFromFile() {
     for(int i = 0; i < lenQuestions; ++ i) 
       ans += "0"; 
     
-    // int it = 0;
-    // for(auto t: diseasesCodes) {
-    //   cout << t.first << " ";
-    //   for(auto i: t.second) {
-    //     cout << i << ", ";
-    //   }
-    //   cout << nl;
-
-    //   if(it ++ == 4) break;
-    // }
-
-    // 00011011100;
-  
-
     searchDisease(diseaseTree->getRoot(), ans);
 
     return 0;
