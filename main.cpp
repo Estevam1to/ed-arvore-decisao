@@ -1,5 +1,6 @@
 /**
- * @authors Luis Estevam Rosa Chaves (536699), Gustavo Henrique Freitas de Sousa (535735)
+ * @authors Luis Estevam Rosa Chaves (536699), Gustavo Henrique Freitas de Sousa
+ * (535735)
  * @brief
  * @date 2023-06-08
  *
@@ -30,7 +31,7 @@ int lenDiseases, lenQuestions;
 
 BinaryTree<int> *diseaseTree = new BinaryTree<int>(1);
 
-// Função para ler os dados do arquivo "in.txt"
+// Função para obter os dados do arquivo de entrada
 void getDataFromFile() {
   ifstream file("in.txt");
 
@@ -38,6 +39,7 @@ void getDataFromFile() {
     string line;
     getline(file, line);
 
+    // Obtendo o número de doenças e perguntas do arquivo
     lenDiseases = stoi(line.substr(0, line.find(" ")));
     lenQuestions = stoi(line.substr(line.find(" ") + 1, line.size()));
 
@@ -46,22 +48,20 @@ void getDataFromFile() {
     if (file.is_open()) {
       while (getline(file, line)) {
         if (itDiseases < lenDiseases) {
-          // Armazena as doenças
+          // Armazenando as doenças na lista de doenças
           diseases.push_back(line);
           ++itDiseases;
         } else if (itQuestions < lenQuestions) {
-          // Armazena as perguntas
+          // Armazenando as perguntas na lista de perguntas
           questions.push_back(line);
           ++itQuestions;
         } else {
-          // Mapeia as doenças com seus códigos correspondentes
+          // Obtendo o código da doença e associando-o às suas chaves
           int firstTab = line.find(TAB_CODE);
-
           int keyOfDesease = stoi(line.substr(0, firstTab));
 
           string code = line.substr(firstTab + 1, line.size());
           string::iterator end_pos = remove(code.begin(), code.end(), TAB_CODE);
-
           code.erase(end_pos, code.end());
 
           diseasesCodes[code].insert(keyOfDesease);
@@ -93,7 +93,6 @@ void buildDiseaseTree() {
     if (current->getValue() == lenQuestions)
       continue;
 
-    // Cria dois nós filhos para cada nó atual
     left = new Node<int>(current->getValue() + 1, nullptr, nullptr);
     right = new Node<int>(current->getValue() + 1, nullptr, nullptr);
 
@@ -107,7 +106,7 @@ void buildDiseaseTree() {
   diseaseTree->setRoot(root);
 }
 
-// Função para fazer uma pergunta ao usuário e retornar a resposta (S (1) or N (0))
+// Função para fazer uma pergunta ao usuário e obter sua resposta (S ou N)
 char doQuestion(Node<int> *root) {
   cout << "Pergunta: " << questions[root->getValue() - 1] << " (S/N)" << nl;
 
@@ -121,10 +120,9 @@ char doQuestion(Node<int> *root) {
   }
 }
 
-// Função para pesquisar a doença com base nas respostas do usuário
+// Função para pesquisar a doença com base nas respostas
 void searchDisease(Node<int> *root, string ans) {
   if (root->getLeft() == nullptr && root->getRight() == nullptr) {
-    // Se chegarmos a uma folha da árvore, fazemos a pergunta final e mostramos os resultados
     if (doQuestion(root) == '1') {
       ans[root->getValue() - 1] = '1';
       root = root->getLeft();
@@ -139,6 +137,7 @@ void searchDisease(Node<int> *root, string ans) {
       for (int i : diseasesKeys) {
         cout << "Doença: " << diseases[i - 1] << nl;
       }
+
       return;
     }
 
@@ -146,7 +145,6 @@ void searchDisease(Node<int> *root, string ans) {
 
     return;
   }
-
   // Fazemos uma pergunta ao usuário e atualizamos a resposta (ans) com base na resposta do usuário
   if (doQuestion(root) == '1') {
     ans[root->getValue() - 1] = '1';
@@ -156,7 +154,6 @@ void searchDisease(Node<int> *root, string ans) {
     root = root->getRight();
   }
 
-  // Chamamos recursivamente a função para continuar a pesquisa
   return searchDisease(root, ans);
 }
 
